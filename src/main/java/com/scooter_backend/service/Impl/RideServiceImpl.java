@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -133,6 +134,51 @@ public class RideServiceImpl implements RideService {
                 .multiply(distanceBD)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RideResponseDTO> getAllRides() {
+        return rideRepository.findAll()
+                .stream()
+                .map(RideMapper::toDTO)
+                .toList();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RideResponseDTO> getUserRides(Long userId) {
+        return rideRepository.findByUserId(userId)
+                .stream()
+                .map(RideMapper::toDTO)
+                .toList();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RideResponseDTO> getDriverRides(Long driverId) {
+        return rideRepository.findByDriverId(driverId)
+                .stream()
+                .map(RideMapper::toDTO)
+                .toList();
+    }
+
+
+    @Override
+    public void cancelRide(Long rideId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+        if (ride.getStatus() != RideStatus.STARTED) {
+            throw new RuntimeException("Cannot cancel");
+        }
+        ride.setStatus(RideStatus.CANCELLED);
+        Scooter scooter = ride.getScooter();
+        scooter.setLocked(true);
+    }
+
+
 
 
 }

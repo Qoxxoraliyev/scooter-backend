@@ -1,5 +1,6 @@
 package com.scooter_backend.entity;
 
+import com.scooter_backend.enums.DriverStatus;
 import com.scooter_backend.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -50,7 +51,10 @@ public class User {
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Ride> rides;
 
-    // 🔥 auto set
+    @Enumerated(EnumType.STRING)
+    private DriverStatus status;
+
+    //  auto set
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
@@ -128,5 +132,8 @@ public class User {
         this.rides = rides;
     }
 
+    public void setStatus(DriverStatus status) {
+        this.status = status;
+    }
 
 }
