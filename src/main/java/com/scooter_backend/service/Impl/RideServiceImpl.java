@@ -51,22 +51,18 @@ public class RideServiceImpl implements RideService {
         }
 
         scooter.setLocked(false);
-
         Ride ride = new Ride();
         ride.setUser(user);
         ride.setScooter(scooter);
-
         ride.setStartTime(LocalDateTime.now());
         ride.setStartLat(dto.startLat());
         ride.setStartLon(dto.startLon());
-
         ride.setStatus(RideStatus.STARTED);
         ride.setPaid(false);
-
         rideRepository.save(ride);
-
         return RideMapper.toDTO(ride);
     }
+
 
     @Override
     public RideResponseDTO finishRide(RideFinishDTO dto) {
@@ -77,35 +73,28 @@ public class RideServiceImpl implements RideService {
         if (ride.getStatus() != RideStatus.STARTED) {
             throw new RuntimeException("Ride is not active");
         }
-
         Scooter scooter = ride.getScooter();
-
         ride.setEndTime(LocalDateTime.now());
         ride.setEndLat(dto.endLat());
         ride.setEndLon(dto.endLon());
-
         RideCalculationDTO calc = calculationService.calculateRide(
                 ride.getStartLat(),
                 ride.getStartLon(),
                 dto.endLat(),
                 dto.endLon()
         );
-
         ride.setDistance(calc.distanceKm());
-
         BigDecimal cost = scooter.getPricePerMinute()
                 .multiply(BigDecimal.valueOf(calc.durationMin()))
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
-
         ride.setCost(cost);
-
         ride.setStatus(RideStatus.FINISHED);
         ride.setPaid(false);
-
         scooter.setLocked(true);
-
         return RideMapper.toDTO(ride);
     }
+
+
 
     @Override
     @Transactional(readOnly = true)
@@ -117,6 +106,7 @@ public class RideServiceImpl implements RideService {
         return RideMapper.toDTO(ride);
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public BigDecimal calculateCost(Long scooterId, Double distance) {
@@ -127,9 +117,7 @@ public class RideServiceImpl implements RideService {
         if (distance == null || distance <= 0) {
             return BigDecimal.ZERO;
         }
-
         BigDecimal distanceBD = BigDecimal.valueOf(distance);
-
         return scooter.getPricePerMinute()
                 .multiply(distanceBD)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
