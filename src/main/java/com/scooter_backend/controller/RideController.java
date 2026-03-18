@@ -2,6 +2,7 @@ package com.scooter_backend.controller;
 
 import com.scooter_backend.dto.ride.*;
 import com.scooter_backend.service.RideService;
+import com.scooter_backend.service.ride.RideCalculationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,12 @@ public class RideController {
 
     private final RideService rideService;
 
-    public RideController(RideService rideService) {
+    private final RideCalculationService calculationService;
+
+
+    public RideController(RideService rideService, RideCalculationService calculationService) {
         this.rideService = rideService;
+        this.calculationService = calculationService;
     }
 
     @PostMapping("/start")
@@ -70,6 +75,20 @@ public class RideController {
             @PathVariable Long userId
     ) {
         return ResponseEntity.ok(rideService.getUserRides(userId));
+    }
+
+    @PostMapping("/calculate")
+    public ResponseEntity<RideCalculationDTO> calculate(
+            @RequestBody RideCalculationRequestDTO dto
+    ) {
+        return ResponseEntity.ok(
+                calculationService.calculateRide(
+                        dto.startLat(),
+                        dto.startLon(),
+                        dto.endLat(),
+                        dto.endLon()
+                )
+        );
     }
 
 

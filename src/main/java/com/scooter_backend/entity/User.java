@@ -136,4 +136,8 @@ public class User {
         this.status = status;
     }
 
+    public DriverStatus getStatus() {
+        return status;
+    }
+
 }
