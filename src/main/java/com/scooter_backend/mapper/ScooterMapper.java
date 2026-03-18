@@ -6,7 +6,7 @@ import com.scooter_backend.entity.ScooterLocation;
 
 public class ScooterMapper {
 
-c    public static ScooterResponseDTO toDTO(Scooter scooter) {
+    public static ScooterResponseDTO toDTO(Scooter scooter) {
         if (scooter == null) return null;
 
         Double lat = null;
