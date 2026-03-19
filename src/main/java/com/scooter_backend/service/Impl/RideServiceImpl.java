@@ -147,7 +147,7 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional(readOnly = true)
     public List<RideResponseDTO> getDriverRides(Long driverId) {
-        return rideRepository.findByDriverId(driverId)
+        return rideRepository.findByDriver_Id(driverId)
                 .stream()
                 .map(RideMapper::toDTO)
                 .toList();

@@ -9,5 +9,4 @@ import java.util.Map;
 @Repository
 public interface ScooterLocationRepository extends JpaRepository<ScooterLocation,Long> {
 
-    Map<Long, Object> getAllLocations();
 }

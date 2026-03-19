@@ -78,6 +78,10 @@ public class Ride {
     @NotNull
     private Scooter scooter;
 
+    @ManyToOne
+    @JoinColumn(name = "driver_id")
+    private User driver;
+
     // Business validation (important)
     @PreUpdate
     public void validateRide() {
@@ -88,7 +92,7 @@ public class Ride {
 
     public Ride(){}
 
-    public Ride(Long id, LocalDateTime startTime, LocalDateTime endTime, Double startLat, Double startLon, Double endLat, Double endLon, Double distance, BigDecimal cost, RideStatus status, Boolean paid, LocalDateTime createdAt, User user, Scooter scooter) {
+    public Ride(Long id, LocalDateTime startTime, LocalDateTime endTime, Double startLat, Double startLon, Double endLat, Double endLon, Double distance, BigDecimal cost, RideStatus status, Boolean paid, LocalDateTime createdAt, User user, Scooter scooter, User driver) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -103,6 +107,7 @@ public class Ride {
         this.createdAt = createdAt;
         this.user = user;
         this.scooter = scooter;
+        this.driver = driver;
     }
 
     public Long getId() {
@@ -209,5 +214,12 @@ public class Ride {
         this.scooter = scooter;
     }
 
+    public User getDriver() {
+        return driver;
+    }
+
+    public void setDriver(User driver) {
+        this.driver = driver;
+    }
 
 }

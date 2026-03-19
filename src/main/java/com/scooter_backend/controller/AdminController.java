@@ -11,6 +11,7 @@ import com.scooter_backend.service.driver.DriverPresenceService;
 import com.scooter_backend.service.driver.DriverService;
 import com.scooter_backend.service.location.ScooterLocationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -25,19 +26,16 @@ public class AdminController {
     private final ScooterLocationService locationService;
     private final DriverService driverService;
     private final DriverPresenceService presenceService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminController(ScooterService scooterService,
-                           RideService rideService,
-                           UserRepository userRepository,
-                           ScooterLocationService locationService,
-                           DriverService driverService,
-                           DriverPresenceService presenceService) {
+    public AdminController(ScooterService scooterService, RideService rideService, UserRepository userRepository, ScooterLocationService locationService, DriverService driverService, DriverPresenceService presenceService, PasswordEncoder passwordEncoder) {
         this.scooterService = scooterService;
         this.rideService = rideService;
         this.userRepository = userRepository;
         this.locationService = locationService;
         this.driverService = driverService;
         this.presenceService = presenceService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/dashboard")
@@ -104,7 +102,7 @@ public class AdminController {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/users/{id}/update")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
             @RequestBody User updated
@@ -126,7 +124,7 @@ public class AdminController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(user);
 
