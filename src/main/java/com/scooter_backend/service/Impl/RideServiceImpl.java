@@ -84,8 +84,8 @@ public class RideServiceImpl implements RideService {
                 dto.endLon()
         );
         ride.setDistance(calc.distanceKm());
-        BigDecimal cost = scooter.getPricePerMinute()
-                .multiply(BigDecimal.valueOf(calc.durationMin()))
+        BigDecimal cost = scooter.getPricePerKm()
+                .multiply(BigDecimal.valueOf(calc.distanceKm()))
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
         ride.setCost(cost);
         ride.setStatus(RideStatus.FINISHED);
@@ -118,7 +118,7 @@ public class RideServiceImpl implements RideService {
             return BigDecimal.ZERO;
         }
         BigDecimal distanceBD = BigDecimal.valueOf(distance);
-        return scooter.getPricePerMinute()
+        return scooter.getPricePerKm()
                 .multiply(distanceBD)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
     }

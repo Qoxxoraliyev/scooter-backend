@@ -2,7 +2,10 @@ package com.scooter_backend.controller;
 import com.scooter_backend.dto.scooter.ScooterCreateDTO;
 import com.scooter_backend.dto.scooter.ScooterResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterStatusDTO;
+import com.scooter_backend.entity.Scooter;
+import com.scooter_backend.mapper.ScooterMapper;
 import com.scooter_backend.service.ScooterService;
+import com.scooter_backend.service.location.ScooterSearchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,8 +16,11 @@ public class ScooterController {
 
     private final ScooterService scooterService;
 
-    public ScooterController(ScooterService scooterService) {
+    private final ScooterSearchService scooterSearchService;
+
+    public ScooterController(ScooterService scooterService, ScooterSearchService scooterSearchService) {
         this.scooterService = scooterService;
+        this.scooterSearchService = scooterSearchService;
     }
 
     @PostMapping
@@ -48,6 +54,20 @@ public class ScooterController {
         scooterService.updateStatus(id, dto);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/nearest")
+    public ResponseEntity<ScooterResponseDTO> findNearest(
+            @RequestParam double lat,
+            @RequestParam double lon
+    ) {
+        Scooter scooter = scooterSearchService.findNearestAvailable(lat, lon);
+        if (scooter == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ScooterMapper.toDTO(scooter));
+    }
+
 
 
     @DeleteMapping("/{id}")

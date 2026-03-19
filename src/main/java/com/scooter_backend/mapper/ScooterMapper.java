@@ -23,7 +23,7 @@ public class ScooterMapper {
                 scooter.getStatus(),
                 scooter.getBatteryLevel(),
                 scooter.getLocked(),
-                scooter.getPricePerMinute(),
+                scooter.getPricePerKm(),
                 lat,
                 lon,
                 scooter.getLastServiceDate(),
@@ -40,7 +40,7 @@ public class ScooterMapper {
         scooter.setStatus(dto.status());
         scooter.setBatteryLevel(dto.batteryLevel());
         scooter.setLocked(dto.isLocked());
-        scooter.setPricePerMinute(dto.pricePerMinute());
+        scooter.setPricePerKm(dto.pricePerKm());
         scooter.setLastServiceDate(dto.lastServiceDate());
 
         return scooter;

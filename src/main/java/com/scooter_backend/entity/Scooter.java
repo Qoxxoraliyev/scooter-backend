@@ -36,10 +36,10 @@ public class Scooter {
     @Column(nullable = false)
     private Boolean isLocked;
 
-    @NotNull(message = "Price is required")
+    @NotNull(message = "Price per km is required")
     @Positive(message = "Price must be positive")
     @Column(nullable = false)
-    private BigDecimal pricePerMinute;
+    private BigDecimal pricePerKm;
 
     @PastOrPresent(message = "Service date cannot be in the future")
     private LocalDateTime lastServiceDate;
@@ -64,13 +64,13 @@ public class Scooter {
 
     public Scooter(){}
 
-    public Scooter(Long id, String name, ScooterStatus status, Integer batteryLevel, Boolean isLocked, BigDecimal pricePerMinute, LocalDateTime lastServiceDate, Boolean deleted, LocalDateTime createdAt, List<Ride> rides, ScooterLocation location) {
+    public Scooter(Long id, String name, ScooterStatus status, Integer batteryLevel, Boolean isLocked, BigDecimal pricePerKm, LocalDateTime lastServiceDate, Boolean deleted, LocalDateTime createdAt, List<Ride> rides, ScooterLocation location) {
         this.id = id;
         this.name = name;
         this.status = status;
         this.batteryLevel = batteryLevel;
         this.isLocked = isLocked;
-        this.pricePerMinute = pricePerMinute;
+        this.pricePerKm=pricePerKm;
         this.lastServiceDate = lastServiceDate;
         this.deleted = deleted;
         this.createdAt = createdAt;
@@ -114,12 +114,12 @@ public class Scooter {
         isLocked = locked;
     }
 
-    public BigDecimal getPricePerMinute() {
-        return pricePerMinute;
+    public BigDecimal getPricePerKm() {
+        return pricePerKm;
     }
 
-    public void setPricePerMinute(BigDecimal pricePerMinute) {
-        this.pricePerMinute = pricePerMinute;
+    public void setPricePerKm(BigDecimal pricePerKm) {
+        this.pricePerKm = pricePerKm;
     }
 
     public LocalDateTime getLastServiceDate() {

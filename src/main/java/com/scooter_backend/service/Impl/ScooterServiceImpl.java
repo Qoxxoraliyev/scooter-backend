@@ -29,7 +29,7 @@ public class ScooterServiceImpl implements ScooterService {
         Scooter scooter = new Scooter();
 
         scooter.setName(dto.name());
-        scooter.setPricePerMinute(dto.pricePerMinute());
+        scooter.setPricePerKm(dto.pricePerKm());
 
         scooter.setStatus(ScooterStatus.ACTIVE);
         scooter.setBatteryLevel(100);

@@ -14,7 +14,7 @@ public record ScooterResponseDTO(
         Integer batteryLevel,
         Boolean isLocked,
 
-        BigDecimal pricePerMinute,
+        BigDecimal pricePerKm,
 
         Double latitude,
         Double longitude,
