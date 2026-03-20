@@ -89,5 +89,18 @@ public class ScooterServiceImpl implements ScooterService {
     }
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public long countAll() {
+        return scooterRepository.countByDeletedFalse();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public long countActive() {
+        return scooterRepository.countByStatusAndDeletedFalse(ScooterStatus.ACTIVE);
+    }
+
 
 }

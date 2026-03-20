@@ -167,6 +167,38 @@ public class RideServiceImpl implements RideService {
     }
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public long countTodayRides() {
+
+        LocalDateTime startOfDay = LocalDateTime.now()
+                .toLocalDate()
+                .atStartOfDay();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return rideRepository.countByCreatedAtBetween(startOfDay, now);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public long countTodayRidesByScooter(Long scooterId) {
+
+        LocalDateTime startOfDay = LocalDateTime.now()
+                .toLocalDate()
+                .atStartOfDay();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return rideRepository.countByScooter_IdAndCreatedAtBetween(
+                scooterId,
+                startOfDay,
+                now
+        );
+    }
+
+
 
 
 }

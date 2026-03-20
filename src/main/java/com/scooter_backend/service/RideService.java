@@ -23,4 +23,8 @@ public interface RideService {
 
     void cancelRide(Long rideId);
 
+    long countTodayRides();long
+
+    countTodayRidesByScooter(Long scooterId);
+
 }

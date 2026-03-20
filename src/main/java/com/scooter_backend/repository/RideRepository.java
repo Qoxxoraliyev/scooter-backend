@@ -20,4 +20,8 @@ public interface RideRepository extends JpaRepository<Ride,Long> {
     @Modifying
     @Query("DELETE FROM Ride r WHERE r.createdAt < :time")
     void deleteOldRides(LocalDateTime time);
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    long countByScooter_IdAndCreatedAtBetween(Long scooterId, LocalDateTime start, LocalDateTime end);
 }

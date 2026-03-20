@@ -17,4 +17,8 @@ public interface ScooterService {
     void updateStatus(Long id, ScooterStatusDTO dto);
 
     void delete(Long id);
+
+    long countAll();
+
+    long countActive();
 }

@@ -150,4 +150,25 @@ public class AdminController {
     public ResponseEntity<Set<Long>> getOnlineDrivers() {
         return ResponseEntity.ok(presenceService.getOnlineDrivers());
     }
+
+    @GetMapping("/scooters/active/count")
+    public ResponseEntity<Long> activeScootersCount() {
+        return ResponseEntity.ok(scooterService.countActive());
+    }
+
+    @GetMapping("/scooters/count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(scooterService.countAll());
+    }
+
+    @GetMapping("/rides/today/count")
+    public ResponseEntity<Long> todayRides() {
+        return ResponseEntity.ok(rideService.countTodayRides());
+    }
+
+    @GetMapping("/scooters/{id}/today-rides")
+    public ResponseEntity<Long> scooterTodayRides(@PathVariable Long id) {
+        return ResponseEntity.ok(rideService.countTodayRidesByScooter(id));
+    }
+
 }
