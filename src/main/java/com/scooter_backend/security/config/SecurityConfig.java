@@ -3,6 +3,7 @@ import com.scooter_backend.security.jwt.JwtAuthFilter;
 import com.scooter_backend.security.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -52,16 +53,25 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 🔒 ADMIN endpoints
-                        .requestMatchers("/api/admin/**").permitAll()             //.hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")             //.hasAuthority("ADMIN")
                         // 🔒 USER endpoints
-                        .requestMatchers("/api/rides/**").permitAll()               //.hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/api/rides/**").hasAnyAuthority("ADMIN","DRIVER")               //.hasAnyAuthority("USER", "ADMIN")
 
-                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/users/**").hasAuthority("ADMIN")
 
                         // 🔒 SCOOTER endpoints
-                        .requestMatchers("/api/scooters/**").permitAll()                        //.hasAnyAuthority("ADMIN", "OPERATOR")
+                        .requestMatchers(HttpMethod.POST, "/api/scooters").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/scooters/*/status").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/scooters/nearest").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/scooters/*").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/scooters").permitAll()
+
                         // 🔒 LOCATION (real-time)
-                        .requestMatchers("/api/location/**").permitAll()                               //.authenticated()
+                        .requestMatchers("/api/location/**").permitAll()//.authenticated()
+
+                        .requestMatchers("/api/driver/online").permitAll()
+                        .requestMatchers("/api/driver/**").hasAuthority("ADMIN")
+
                         // 🔒 qolgan hammasi
                         .anyRequest().authenticated()
                 )

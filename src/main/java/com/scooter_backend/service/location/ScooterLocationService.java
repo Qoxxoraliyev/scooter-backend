@@ -30,6 +30,11 @@ public class ScooterLocationService {
 
         for (String key : keys) {
 
+            // ts keylarni tashlab yuboramiz
+            if (key.endsWith(":ts")) {
+                continue;
+            }
+
             Object value = redisTemplate.opsForValue().get(key);
 
             if (!(value instanceof Map<?, ?> locationMap)) {
@@ -47,7 +52,8 @@ public class ScooterLocationService {
 
                 result.put(scooterId, location);
 
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

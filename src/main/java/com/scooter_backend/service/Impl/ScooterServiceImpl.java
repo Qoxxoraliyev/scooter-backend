@@ -12,6 +12,7 @@ import com.scooter_backend.websocket.ScooterSocketService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -67,6 +68,22 @@ public class ScooterServiceImpl implements ScooterService {
         Scooter scooter = getEntity(id);
 
         return ScooterMapper.toDTO(scooter);
+    }
+
+
+    @Override
+    public ScooterResponseDTO updatePricePerKm(Long scooterId, BigDecimal pricePerKm) {
+        Scooter scooter = scooterRepository.findById(scooterId)
+                .orElseThrow(() -> new RuntimeException("Scooter not found"));
+
+        if (pricePerKm == null || pricePerKm.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Price per km must be greater than 0");
+        }
+
+        scooter.setPricePerKm(pricePerKm);
+
+        Scooter updatedScooter = scooterRepository.save(scooter);
+        return ScooterMapper.toDTO(updatedScooter);
     }
 
     @Override

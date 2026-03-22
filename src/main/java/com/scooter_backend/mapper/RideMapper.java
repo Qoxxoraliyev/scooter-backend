@@ -15,6 +15,13 @@ public class RideMapper {
     public static RideResponseDTO toDTO(Ride ride) {
         if (ride == null) return null;
 
+        Double distance = ride.getDistance();
+        Double distanceRounded = null;
+
+        if (distance != null) {
+            distanceRounded = Math.round(distance * 10.0) / 10.0;
+        }
+
         return new RideResponseDTO(
                 ride.getId(),
                 ride.getStartTime(),
@@ -23,7 +30,7 @@ public class RideMapper {
                 ride.getStartLon(),
                 ride.getEndLat(),
                 ride.getEndLon(),
-                ride.getDistance(),
+                distanceRounded,
                 ride.getCost(),
                 ride.getStatus(),
                 ride.getPaid(),

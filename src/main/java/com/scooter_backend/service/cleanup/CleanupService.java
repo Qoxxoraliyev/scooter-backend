@@ -23,7 +23,7 @@ public class CleanupService {
     @Scheduled(cron = "0 0 3 * * *")
     public void cleanOldData() {
 
-        LocalDateTime threshold = LocalDateTime.now().minusDays(5);
+        LocalDateTime threshold = LocalDateTime.now().minusDays(2);
 
         rideRepository.deleteOldRides(threshold);
         locationRepository.deleteOldLocations(threshold);

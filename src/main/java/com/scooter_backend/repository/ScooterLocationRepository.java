@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface ScooterLocationRepository extends JpaRepository<ScooterLocation,Long> {
@@ -16,4 +17,5 @@ public interface ScooterLocationRepository extends JpaRepository<ScooterLocation
     @Query("DELETE FROM ScooterLocation s WHERE s.updatedAt < :time")
     void deleteOldLocations(LocalDateTime time);
 
+    Optional<ScooterLocation> findByScooter_Id(Long scooterId);
 }

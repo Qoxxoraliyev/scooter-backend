@@ -6,7 +6,6 @@ import com.scooter_backend.service.ride.RideCalculationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -56,14 +55,6 @@ public class RideController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/calculate")
-    public ResponseEntity<BigDecimal> calculateCost(
-            @RequestParam Long scooterId,
-            @RequestParam Double distance
-    ) {
-        BigDecimal cost = rideService.calculateCost(scooterId, distance);
-        return ResponseEntity.ok(cost);
-    }
 
     @GetMapping("/all")
     public ResponseEntity<List<RideResponseDTO>> getAllRides() {
@@ -78,7 +69,7 @@ public class RideController {
     }
 
     @PostMapping("/calculate")
-    public ResponseEntity<RideCalculationDTO> calculate(
+    public ResponseEntity<RideCalculationDTO> calculateRideTime(
             @RequestBody RideCalculationRequestDTO dto
     ) {
         return ResponseEntity.ok(

@@ -2,8 +2,10 @@ package com.scooter_backend.controller;
 import com.scooter_backend.dto.ride.RideResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterStatusDTO;
+import com.scooter_backend.dto.user.UserResponseDTO;
 import com.scooter_backend.entity.User;
 import com.scooter_backend.enums.DriverStatus;
+import com.scooter_backend.mapper.UserMapper;
 import com.scooter_backend.repository.UserRepository;
 import com.scooter_backend.service.RideService;
 import com.scooter_backend.service.ScooterService;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
@@ -68,6 +71,14 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/scooters/{id}/price")
+    public ResponseEntity<ScooterResponseDTO> updateScooterPrice(
+            @PathVariable Long id,
+            @RequestParam BigDecimal pricePerKm
+    ) {
+        return ResponseEntity.ok(scooterService.updatePricePerKm(id, pricePerKm));
+    }
+
 
     @GetMapping("/scooters/locations")
     public ResponseEntity<Map<Long, Map<String, Object>>> getLocations() {
@@ -80,7 +91,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers(
+    public ResponseEntity<List<UserResponseDTO>> getUsers(
             @RequestParam(required = false) String role
     ) {
         List<User> users;
@@ -94,8 +105,14 @@ public class AdminController {
                     .toList();
         }
 
-        return ResponseEntity.ok(users);
+        List<UserResponseDTO> response = users.stream()
+                .map(UserMapper::toDTO)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
+
+
 
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
@@ -103,7 +120,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}/update")
-    public ResponseEntity<User> updateUser(
+    public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
             @RequestBody User updated
     ) {
@@ -113,7 +130,9 @@ public class AdminController {
         user.setFullName(updated.getFullName());
         user.setPhone(updated.getPhone());
 
-        return ResponseEntity.ok(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+
+        return ResponseEntity.ok(UserMapper.toDTO(savedUser));
     }
 
     @PutMapping("/users/{id}/password")

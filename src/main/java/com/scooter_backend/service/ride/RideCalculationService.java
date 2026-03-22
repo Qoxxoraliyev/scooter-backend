@@ -16,9 +16,14 @@ public class RideCalculationService {
             double endLon
     ) {
         double distanceKm = haversine(startLat, startLon, endLat, endLon);
+
+        double distanceRounded = Math.round(distanceKm * 10.0) / 10.0;
+
         double durationMin = (distanceKm / AVG_SCOOTER_SPEED_KMH) * 60.0;
 
-        return new RideCalculationDTO(distanceKm, durationMin);
+        long durationRounded = Math.round(durationMin);
+
+        return new RideCalculationDTO(distanceRounded, durationRounded);
     }
 
     private double haversine(double lat1, double lon1, double lat2, double lon2) {
@@ -33,4 +38,6 @@ public class RideCalculationService {
 
         return EARTH_RADIUS_KM * c;
     }
+
+
 }
