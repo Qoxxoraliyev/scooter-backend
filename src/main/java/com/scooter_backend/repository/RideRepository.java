@@ -1,6 +1,7 @@
 package com.scooter_backend.repository;
 
 import com.scooter_backend.entity.Ride;
+import com.scooter_backend.enums.RideStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,6 @@ public interface RideRepository extends JpaRepository<Ride,Long> {
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     long countByScooter_IdAndCreatedAtBetween(Long scooterId, LocalDateTime start, LocalDateTime end);
+
+    boolean existsByScooterIdAndStatus(Long scooterId, RideStatus status);
 }

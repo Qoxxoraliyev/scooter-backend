@@ -1,5 +1,6 @@
 package com.scooter_backend.dto.user;
 
+import com.scooter_backend.enums.Role;
 import jakarta.validation.constraints.*;
 
 public record UserUpdateDTO(
@@ -10,6 +11,8 @@ public record UserUpdateDTO(
 
         @NotBlank(message = "Phone is required")
         @Pattern(regexp = "^[+]?[0-9]{9,15}$")
-        String phone
+        String phone,
+
+        Role role
 
 ) {}

@@ -68,14 +68,12 @@ public class Ride {
         this.createdAt = LocalDateTime.now();
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "scooter_id", nullable = false)
-    @NotNull
     private Scooter scooter;
 
     @ManyToOne

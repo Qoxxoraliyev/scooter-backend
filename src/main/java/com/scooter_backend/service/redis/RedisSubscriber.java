@@ -27,7 +27,7 @@ public class RedisSubscriber implements MessageListener {
             );
 
             messagingTemplate.convertAndSend(
-                    "/topic/scooters",
+                    "/topic/scooters/location",
                     location
             );
 

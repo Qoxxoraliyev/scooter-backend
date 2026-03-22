@@ -8,6 +8,7 @@ import com.scooter_backend.enums.ScooterStatus;
 import com.scooter_backend.repository.ScooterRepository;
 import com.scooter_backend.mapper.ScooterMapper;
 import com.scooter_backend.service.ScooterService;
+import com.scooter_backend.websocket.ScooterSocketService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +20,13 @@ public class ScooterServiceImpl implements ScooterService {
 
     private final ScooterRepository scooterRepository;
 
-    public ScooterServiceImpl(ScooterRepository scooterRepository) {
+    private final ScooterSocketService scooterSocketService;
+
+    public ScooterServiceImpl(ScooterRepository scooterRepository, ScooterSocketService scooterSocketService) {
         this.scooterRepository = scooterRepository;
+        this.scooterSocketService = scooterSocketService;
     }
+
 
     @Override
     public ScooterResponseDTO create(ScooterCreateDTO dto) {
@@ -38,7 +43,10 @@ public class ScooterServiceImpl implements ScooterService {
 
         scooterRepository.save(scooter);
 
-        return ScooterMapper.toDTO(scooter);
+        ScooterResponseDTO response = ScooterMapper.toDTO(scooter);
+        scooterSocketService.sendScooterUpdate(response);
+
+        return response;
     }
 
     @Override
@@ -71,6 +79,9 @@ public class ScooterServiceImpl implements ScooterService {
         if (dto.status() == ScooterStatus.INACTIVE) {
             scooter.setLocked(true);
         }
+
+        scooterRepository.save(scooter);
+        scooterSocketService.sendStatusUpdate(ScooterMapper.toDTO(scooter));
     }
 
     @Override
@@ -79,6 +90,8 @@ public class ScooterServiceImpl implements ScooterService {
         Scooter scooter = getEntity(id);
 
         scooter.setDeleted(true);
+        scooterRepository.save(scooter);
+        scooterSocketService.sendScooterUpdate(ScooterMapper.toDTO(scooter));
     }
 
     private Scooter getEntity(Long id) {

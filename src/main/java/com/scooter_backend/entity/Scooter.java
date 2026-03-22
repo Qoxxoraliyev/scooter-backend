@@ -53,7 +53,7 @@ public class Scooter {
     @OneToMany(mappedBy = "scooter")
     private List<Ride> rides;
 
-    @OneToOne(mappedBy = "scooter", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "scooter", cascade = CascadeType.ALL,orphanRemoval = true)
     private ScooterLocation location;
 
     //  Auto set createdAt

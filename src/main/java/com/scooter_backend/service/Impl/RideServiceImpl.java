@@ -4,12 +4,14 @@ import com.scooter_backend.entity.Ride;
 import com.scooter_backend.entity.Scooter;
 import com.scooter_backend.entity.User;
 import com.scooter_backend.enums.RideStatus;
+import com.scooter_backend.enums.Role;
 import com.scooter_backend.mapper.RideMapper;
 import com.scooter_backend.repository.RideRepository;
 import com.scooter_backend.repository.ScooterRepository;
 import com.scooter_backend.repository.UserRepository;
 import com.scooter_backend.service.RideService;
 import com.scooter_backend.service.ride.RideCalculationService;
+import com.scooter_backend.websocket.RideSocketService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +27,14 @@ public class RideServiceImpl implements RideService {
     private final ScooterRepository scooterRepository;
     private final UserRepository userRepository;
     private final RideCalculationService calculationService;
+    private final RideSocketService rideSocketService;
 
-    public RideServiceImpl(RideRepository rideRepository, ScooterRepository scooterRepository, UserRepository userRepository, RideCalculationService calculationService) {
+    public RideServiceImpl(RideRepository rideRepository, ScooterRepository scooterRepository, UserRepository userRepository, RideCalculationService calculationService, RideSocketService rideSocketService) {
         this.rideRepository = rideRepository;
         this.scooterRepository = scooterRepository;
         this.userRepository = userRepository;
         this.calculationService = calculationService;
+        this.rideSocketService = rideSocketService;
     }
 
     @Override
@@ -38,6 +42,10 @@ public class RideServiceImpl implements RideService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() != Role.DRIVER) {
+            throw new RuntimeException("Only drivers can start ride");
+        }
 
         Scooter scooter = scooterRepository.findById(dto.scooterId())
                 .orElseThrow(() -> new RuntimeException("Scooter not found"));
@@ -50,7 +58,14 @@ public class RideServiceImpl implements RideService {
             throw new RuntimeException("Battery too low");
         }
 
+        boolean hasActiveRide = rideRepository.existsByScooterIdAndStatus(dto.scooterId(), RideStatus.STARTED);
+        if (hasActiveRide) {
+            throw new RuntimeException("Scooter already has active ride");
+        }
+
         scooter.setLocked(false);
+        scooterRepository.save(scooter);
+
         Ride ride = new Ride();
         ride.setUser(user);
         ride.setScooter(scooter);
@@ -59,8 +74,12 @@ public class RideServiceImpl implements RideService {
         ride.setStartLon(dto.startLon());
         ride.setStatus(RideStatus.STARTED);
         ride.setPaid(false);
+
         rideRepository.save(ride);
-        return RideMapper.toDTO(ride);
+
+        RideResponseDTO response = RideMapper.toDTO(ride);
+        rideSocketService.sendRideStarted(response);
+        return response;
     }
 
 
@@ -73,25 +92,39 @@ public class RideServiceImpl implements RideService {
         if (ride.getStatus() != RideStatus.STARTED) {
             throw new RuntimeException("Ride is not active");
         }
+
         Scooter scooter = ride.getScooter();
+
         ride.setEndTime(LocalDateTime.now());
         ride.setEndLat(dto.endLat());
         ride.setEndLon(dto.endLon());
+
         RideCalculationDTO calc = calculationService.calculateRide(
                 ride.getStartLat(),
                 ride.getStartLon(),
                 dto.endLat(),
                 dto.endLon()
         );
+
         ride.setDistance(calc.distanceKm());
+
         BigDecimal cost = scooter.getPricePerKm()
                 .multiply(BigDecimal.valueOf(calc.distanceKm()))
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
+                .setScale(2, java.math.RoundingMode.HALF_UP);
+
         ride.setCost(cost);
         ride.setStatus(RideStatus.FINISHED);
         ride.setPaid(false);
+
         scooter.setLocked(true);
-        return RideMapper.toDTO(ride);
+
+        scooterRepository.save(scooter);
+        rideRepository.save(ride);
+
+        RideResponseDTO response = RideMapper.toDTO(ride);
+        rideSocketService.sendRideFinished(response);
+
+        return response;
     }
 
 
@@ -120,7 +153,7 @@ public class RideServiceImpl implements RideService {
         BigDecimal distanceBD = BigDecimal.valueOf(distance);
         return scooter.getPricePerKm()
                 .multiply(distanceBD)
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
+                .setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
 
@@ -158,12 +191,20 @@ public class RideServiceImpl implements RideService {
     public void cancelRide(Long rideId) {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
+
         if (ride.getStatus() != RideStatus.STARTED) {
             throw new RuntimeException("Cannot cancel");
         }
+
         ride.setStatus(RideStatus.CANCELLED);
+
         Scooter scooter = ride.getScooter();
         scooter.setLocked(true);
+
+        scooterRepository.save(scooter);
+        rideRepository.save(ride);
+
+        rideSocketService.sendRideUpdate(RideMapper.toDTO(ride));
     }
 
 

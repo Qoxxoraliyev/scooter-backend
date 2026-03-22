@@ -1,4 +1,5 @@
 package com.scooter_backend.security.jwt;
+import com.scooter_backend.security.service.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +19,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService blacklistService;
 
-    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService, TokenBlacklistService blacklistService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.blacklistService = blacklistService;
     }
 
     @Override
@@ -29,17 +32,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-
-        // 🔥 Swagger + public endpoint skip
-        if (path.startsWith("/api/auth")
-                || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs")) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         final String header = request.getHeader("Authorization");
 
@@ -49,12 +41,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         final String token = header.substring(7);
+
+        if (blacklistService.isBlacklisted(token)) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+            return;
+        }
+
         final String phone;
 
         try {
             phone = jwtService.extractPhone(token);
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -79,6 +77,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 
 }

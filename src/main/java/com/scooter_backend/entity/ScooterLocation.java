@@ -6,12 +6,7 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "scooter_locations",
-        indexes = {
-                @Index(name = "idx_location_lat_lon", columnList = "latitude, longitude")
-        }
-)
+@Table(name = "scooter_locations")
 public class ScooterLocation {
 
     @Id
@@ -35,7 +30,6 @@ public class ScooterLocation {
 
     @OneToOne
     @JoinColumn(name = "scooter_id", nullable = false, unique = true)
-    @NotNull
     private Scooter scooter;
 
     //  auto update time

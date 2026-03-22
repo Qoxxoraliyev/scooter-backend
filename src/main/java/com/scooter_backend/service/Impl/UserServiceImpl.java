@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toDTO(user);
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getAll(String role) {
@@ -80,6 +81,7 @@ public class UserServiceImpl implements UserService {
 
         user.setFullName(dto.fullName());
         user.setPhone(dto.phone());
+        user.setRole(dto.role());
 
         return UserMapper.toDTO(user);
     }
@@ -87,7 +89,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(Long id, UserPasswordUpdateDTO dto) {
 
+
+
         User user = getUser(id);
+        System.out.println(dto.oldPassword());
+        System.out.println(user.getPassword());
 
         if (!passwordEncoder.matches(dto.oldPassword(), user.getPassword())) {
             throw new RuntimeException("Old password is incorrect");

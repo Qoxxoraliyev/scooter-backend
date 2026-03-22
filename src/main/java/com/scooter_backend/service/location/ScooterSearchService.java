@@ -58,7 +58,7 @@ public class ScooterSearchService {
         return ids.stream()
                 .map(id -> scooterRepository.findById(id).orElse(null))
                 .filter(s -> s != null)
-                .filter(s -> !Boolean.TRUE.equals(s.getLocked()))
+                .filter(s -> Boolean.TRUE.equals(s.getLocked()))
                 .filter(s -> !Boolean.TRUE.equals(s.getDeleted()))
                 .filter(s -> s.getStatus() == ScooterStatus.ACTIVE)
                 .findFirst()
