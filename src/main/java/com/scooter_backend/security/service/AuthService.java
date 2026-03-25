@@ -40,8 +40,8 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String access = jwtService.generateAccessToken(user.getPhone());
-        String refresh = jwtService.generateRefreshToken(user.getPhone());
+        String access = jwtService.generateAccessToken(user.getPhone(), user.getRole().name());
+        String refresh = jwtService.generateRefreshToken(user.getPhone(), user.getRole().name());
 
         return new AuthResponse(access, refresh);
     }
@@ -60,8 +60,8 @@ public class AuthService {
             throw new CustomException("User is disabled");
         }
 
-        String access = jwtService.generateAccessToken(user.getPhone());
-        String refresh = jwtService.generateRefreshToken(user.getPhone());
+        String access = jwtService.generateAccessToken(user.getPhone(), user.getRole().name());
+        String refresh = jwtService.generateRefreshToken(user.getPhone(), user.getRole().name());
 
         return new AuthResponse(access, refresh);
     }
@@ -78,7 +78,7 @@ public class AuthService {
             throw new CustomException("Invalid refresh token");
         }
 
-        String newAccess = jwtService.generateAccessToken(phone);
+        String newAccess = jwtService.generateAccessToken(phone,user.getRole().name());
 
         return new AuthResponse(newAccess, refreshToken);
     }

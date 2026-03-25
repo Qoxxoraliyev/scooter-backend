@@ -50,8 +50,8 @@ public class RideServiceImpl implements RideService {
         Scooter scooter = scooterRepository.findById(dto.scooterId())
                 .orElseThrow(() -> new RuntimeException("Scooter not found"));
 
-        if (!Boolean.TRUE.equals(scooter.getLocked())) {
-            throw new RuntimeException("Scooter already unlocked");
+        if (Boolean.TRUE.equals(scooter.getLocked())) {
+            throw new RuntimeException("Scooter is already in use");
         }
 
         if (scooter.getBatteryLevel() < 20) {
@@ -116,7 +116,8 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(RideStatus.FINISHED);
         ride.setPaid(false);
 
-        scooter.setLocked(true);
+        scooter.setLocked(false);
+
 
         scooterRepository.save(scooter);
         rideRepository.save(ride);
@@ -199,7 +200,7 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(RideStatus.CANCELLED);
 
         Scooter scooter = ride.getScooter();
-        scooter.setLocked(true);
+        scooter.setLocked(false);
 
         scooterRepository.save(scooter);
         rideRepository.save(ride);

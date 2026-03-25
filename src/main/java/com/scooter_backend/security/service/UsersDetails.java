@@ -15,14 +15,17 @@ public class UsersDetails implements UserDetails {
     private final Boolean enabled;
     private final List<GrantedAuthority> authorities;
 
+
     public UsersDetails(User user) {
         this.phone = user.getPhone();
         this.password = user.getPassword();
         this.enabled = user.getEnabled();
 
         this.authorities = List.of(
-                new SimpleGrantedAuthority(user.getRole().name())
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
         );
+
+
     }
 
     @Override
@@ -59,4 +62,6 @@ public class UsersDetails implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
+
 }

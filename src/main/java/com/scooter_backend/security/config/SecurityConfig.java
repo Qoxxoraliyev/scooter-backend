@@ -72,6 +72,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/driver/online").permitAll()
                         .requestMatchers("/api/driver/**").hasAuthority("ADMIN")
 
+
+
                         // 🔒 qolgan hammasi
                         .anyRequest().authenticated()
                 )

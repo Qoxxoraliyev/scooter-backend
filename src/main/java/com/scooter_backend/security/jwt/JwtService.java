@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -20,18 +22,26 @@ public class JwtService {
     }
 
     // 🔐 ACCESS TOKEN
-    public String generateAccessToken(String phone) {
+    public String generateAccessToken(String phone, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+
         return Jwts.builder()
-                .setSubject(phone) // PHONE
+                .setClaims(claims)
+                .setSubject(phone)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() +1000 * 60 * 60 * 24)) // 24 soat
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // 🔄 REFRESH TOKEN
-    public String generateRefreshToken(String phone) {
+    public String generateRefreshToken(String phone, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(phone)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)) // 7 kun
@@ -41,6 +51,10 @@ public class JwtService {
 
     public String extractPhone(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     public Date extractExpiration(String token) {
@@ -71,4 +85,6 @@ public class JwtService {
     private boolean isExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+
+
 }
