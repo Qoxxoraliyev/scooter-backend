@@ -53,24 +53,24 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 🔒 ADMIN endpoints
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")             //.hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")             //.hasAuthority("ADMIN")
                         // 🔒 USER endpoints
-                        .requestMatchers("/api/rides/**").hasAnyRole("ADMIN","DRIVER")               //.hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/api/rides/**").hasAnyAuthority("ADMIN","DRIVER")               //.hasAnyAuthority("USER", "ADMIN")
 
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").hasAuthority("ADMIN")
 
                         // 🔒 SCOOTER endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/scooters").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/scooters/*/status").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/scooters/nearest").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/scooters/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/scooters").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/scooters/*/status").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/scooters/nearest").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/scooters/*").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/api/scooters").permitAll()
 
                         // 🔒 LOCATION (real-time)
                         .requestMatchers("/api/location/**").permitAll()//.authenticated()
 
                         .requestMatchers("/api/driver/online").permitAll()
-                        .requestMatchers("/api/driver/**").hasRole("ADMIN")
+                        .requestMatchers("/api/driver/**").hasAuthority("ADMIN")
 
 
 
