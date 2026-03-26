@@ -22,7 +22,7 @@ public class UsersDetails implements UserDetails {
         this.enabled = user.getEnabled();
 
         this.authorities = List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                new SimpleGrantedAuthority(user.getRole().name())
         );
 
 
