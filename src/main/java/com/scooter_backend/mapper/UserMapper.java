@@ -28,7 +28,7 @@ public class UserMapper {
                 user.getPhone(),
                 user.getRole(),
                 user.getEnabled(),
-                user.getStatus(),
+                status,
                 scooterId,
                 user.getCreatedAt()
         );
