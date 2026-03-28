@@ -1,5 +1,6 @@
 package com.scooter_backend.dto.user;
 
+import com.scooter_backend.enums.DriverStatus;
 import com.scooter_backend.enums.Role;
 import jakarta.validation.constraints.*;
 
@@ -13,6 +14,10 @@ public record UserUpdateDTO(
         @Pattern(regexp = "^[+]?[0-9]{9,15}$")
         String phone,
 
-        Role role
+        Role role,
+
+        Boolean enabled,
+
+        DriverStatus status
 
 ) {}

@@ -71,7 +71,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO update(Long id, UserUpdateDTO dto) {
-
         User user = getUser(id);
 
         if (!user.getPhone().equals(dto.phone()) &&
@@ -82,14 +81,21 @@ public class UserServiceImpl implements UserService {
         user.setFullName(dto.fullName());
         user.setPhone(dto.phone());
         user.setRole(dto.role());
+        user.setEnabled(dto.enabled());
 
-        return UserMapper.toDTO(user);
+        if (dto.role() == Role.DRIVER) {
+            user.setStatus(dto.status());
+        } else {
+            user.setStatus(null);
+        }
+
+        User savedUser = userRepository.save(user);
+        return UserMapper.toDTO(savedUser);
     }
+
 
     @Override
     public void updatePassword(Long id, UserPasswordUpdateDTO dto) {
-
-
 
         User user = getUser(id);
         System.out.println(dto.oldPassword());
