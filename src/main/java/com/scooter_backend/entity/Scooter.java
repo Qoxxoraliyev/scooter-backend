@@ -56,6 +56,9 @@ public class Scooter {
     @OneToOne(mappedBy = "scooter", cascade = CascadeType.ALL,orphanRemoval = true)
     private ScooterLocation location;
 
+    @OneToOne(mappedBy = "scooter")
+    private Driver driver;
+
     //  Auto set createdAt
     @PrePersist
     public void prePersist() {
@@ -64,18 +67,19 @@ public class Scooter {
 
     public Scooter(){}
 
-    public Scooter(Long id, String name, ScooterStatus status, Integer batteryLevel, Boolean isLocked, BigDecimal pricePerKm, LocalDateTime lastServiceDate, Boolean deleted, LocalDateTime createdAt, List<Ride> rides, ScooterLocation location) {
+    public Scooter(Long id, String name, ScooterStatus status, Integer batteryLevel, Boolean isLocked, BigDecimal pricePerKm, LocalDateTime lastServiceDate, Boolean deleted, LocalDateTime createdAt, List<Ride> rides, ScooterLocation location, Driver driver) {
         this.id = id;
         this.name = name;
         this.status = status;
         this.batteryLevel = batteryLevel;
         this.isLocked = isLocked;
-        this.pricePerKm=pricePerKm;
+        this.pricePerKm = pricePerKm;
         this.lastServiceDate = lastServiceDate;
         this.deleted = deleted;
         this.createdAt = createdAt;
         this.rides = rides;
         this.location = location;
+        this.driver = driver;
     }
 
     public Long getId() {
@@ -158,5 +162,12 @@ public class Scooter {
         this.location = location;
     }
 
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
 
 }

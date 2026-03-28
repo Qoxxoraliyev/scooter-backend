@@ -12,6 +12,7 @@ public record UserResponseDTO(
         Role role,
         Boolean enabled,
         DriverStatus status,
+        Long scooterId,
         LocalDateTime createdAt
 ) {}
 

@@ -48,6 +48,9 @@ public class User {
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Ride> rides;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Driver driver;
+
     @Enumerated(EnumType.STRING)
     private DriverStatus status;
 
@@ -62,7 +65,8 @@ public class User {
 
     public User(){}
 
-    public User(Long id, String fullName, String phone, String password, Role role, Boolean enabled, LocalDateTime createdAt, List<Ride> rides) {
+
+    public User(Long id, String fullName, String phone, String password, Role role, Boolean enabled, LocalDateTime createdAt, List<Ride> rides, Driver driver, DriverStatus status) {
         this.id = id;
         this.fullName = fullName;
         this.phone = phone;
@@ -71,6 +75,8 @@ public class User {
         this.enabled = enabled;
         this.createdAt = createdAt;
         this.rides = rides;
+        this.driver = driver;
+        this.status = status;
     }
 
     public Long getId() {
@@ -136,5 +142,14 @@ public class User {
     public DriverStatus getStatus() {
         return status;
     }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
 
 }

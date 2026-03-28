@@ -17,5 +17,7 @@ public record UserCreateDTO(
         String password,
 
         @NotNull(message = "Role is required")
-        Role role
+        Role role,
+
+        Long scooterId
 ) {}
