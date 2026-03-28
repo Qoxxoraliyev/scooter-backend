@@ -2,6 +2,7 @@ package com.scooter_backend.controller;
 import com.scooter_backend.dto.ride.RideResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterStatusDTO;
+import com.scooter_backend.dto.scooter.ScooterUpdateDTO;
 import com.scooter_backend.dto.user.UserResponseDTO;
 import com.scooter_backend.dto.user.UserUpdateDTO;
 import com.scooter_backend.entity.User;
@@ -14,6 +15,7 @@ import com.scooter_backend.service.UserService;
 import com.scooter_backend.service.driver.DriverPresenceService;
 import com.scooter_backend.service.driver.DriverService;
 import com.scooter_backend.service.location.ScooterLocationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -130,7 +132,7 @@ public class AdminController {
     ) {
         return ResponseEntity.ok(userService.update(id,dto));
     }
-    
+
 
     @PutMapping("/users/{id}/password")
     public ResponseEntity<Void> updatePassword(
@@ -146,6 +148,16 @@ public class AdminController {
 
         return ResponseEntity.noContent().build();
     }
+
+
+    @PutMapping("/scooters/{id}")
+    public ResponseEntity<ScooterResponseDTO> updateScooter(
+            @PathVariable Long id,
+            @Valid @RequestBody ScooterUpdateDTO dto
+    ) {
+        return ResponseEntity.ok(scooterService.update(id, dto));
+    }
+    
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

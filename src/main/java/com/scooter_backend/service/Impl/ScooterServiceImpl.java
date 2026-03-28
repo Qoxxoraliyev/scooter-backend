@@ -3,6 +3,7 @@ package com.scooter_backend.service.Impl;
 import com.scooter_backend.dto.scooter.ScooterCreateDTO;
 import com.scooter_backend.dto.scooter.ScooterResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterStatusDTO;
+import com.scooter_backend.dto.scooter.ScooterUpdateDTO;
 import com.scooter_backend.entity.Scooter;
 import com.scooter_backend.enums.ScooterStatus;
 import com.scooter_backend.repository.ScooterRepository;
@@ -100,6 +101,30 @@ public class ScooterServiceImpl implements ScooterService {
         scooterRepository.save(scooter);
         scooterSocketService.sendStatusUpdate(ScooterMapper.toDTO(scooter));
     }
+
+    @Override
+    public ScooterResponseDTO update(Long id, ScooterUpdateDTO dto) {
+        Scooter scooter = getEntity(id);
+
+        scooter.setName(dto.name());
+        scooter.setStatus(dto.status());
+        scooter.setBatteryLevel(dto.batteryLevel());
+        scooter.setLocked(dto.locked());
+        scooter.setPricePerKm(dto.pricePerKm());
+
+        if (dto.status() == ScooterStatus.INACTIVE) {
+            scooter.setLocked(true);
+        }
+
+        Scooter savedScooter = scooterRepository.save(scooter);
+        ScooterResponseDTO response = ScooterMapper.toDTO(savedScooter);
+
+        scooterSocketService.sendScooterUpdate(response);
+        scooterSocketService.sendStatusUpdate(response);
+
+        return response;
+    }
+
 
     @Override
     public void delete(Long id) {
