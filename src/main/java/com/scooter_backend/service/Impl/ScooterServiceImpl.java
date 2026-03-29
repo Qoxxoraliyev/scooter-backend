@@ -33,17 +33,23 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public ScooterResponseDTO create(ScooterCreateDTO dto) {
 
-        Scooter scooter = new Scooter();
+        Scooter scooter = ScooterMapper.toEntity(dto);
 
-        scooter.setName(dto.name());
-        scooter.setPricePerKm(dto.pricePerKm());
+        if (scooter.getStatus() == null) {
+            scooter.setStatus(ScooterStatus.ACTIVE);
+        }
 
-        scooter.setStatus(ScooterStatus.ACTIVE);
-        scooter.setBatteryLevel(100);
-        scooter.setLocked(true);
+        if (scooter.getBatteryLevel() == null) {
+            scooter.setBatteryLevel(100);
+        }
+
+        if (scooter.getLocked() == null) {
+            scooter.setLocked(true);
+        }
+
         scooter.setDeleted(false);
 
-        scooterRepository.save(scooter);
+        scooter = scooterRepository.save(scooter);
 
         ScooterResponseDTO response = ScooterMapper.toDTO(scooter);
         scooterSocketService.sendScooterUpdate(response);
