@@ -1,4 +1,5 @@
 package com.scooter_backend.dto.user;
+import com.scooter_backend.enums.DriverStatus;
 import com.scooter_backend.enums.Role;
 import jakarta.validation.constraints.*;
 
@@ -18,6 +19,10 @@ public record UserCreateDTO(
 
         @NotNull(message = "Role is required")
         Role role,
+
+        Boolean enabled,
+
+        DriverStatus status,
 
         Long scooterId
 ) {}

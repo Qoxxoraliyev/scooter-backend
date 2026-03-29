@@ -45,6 +45,8 @@ public class UserServiceImpl implements UserService {
         user.setPhone(dto.phone());
         user.setPassword(passwordEncoder.encode(dto.password()));
         user.setRole(dto.role());
+        user.setEnabled(dto.enabled() != null ? dto.enabled() : true);
+
 
         userRepository.save(user);
 
@@ -63,7 +65,8 @@ public class UserServiceImpl implements UserService {
             Driver driver = new Driver();
             driver.setUser(user);
             driver.setScooter(scooter);
-            driver.setStatus(DriverStatus.INACTIVE);
+            driver.setStatus(dto.status() != null ? dto.status() : DriverStatus.INACTIVE);
+
 
             user.setDriver(driver);
             scooter.setDriver(driver);
