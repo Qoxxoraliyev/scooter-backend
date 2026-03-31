@@ -57,16 +57,5 @@ public class RideMapper {
         return ride;
     }
 
-    public static void finishRide(Ride ride, RideFinishDTO dto, BigDecimal cost) {
-        if (ride == null || dto == null) return;
-
-        ride.setEndTime(LocalDateTime.now());
-        ride.setEndLat(dto.endLat());
-        ride.setEndLon(dto.endLon());
-        ride.setDistance(dto.distance());
-
-        ride.setCost(cost);
-        ride.setStatus(RideStatus.COMPLETED);
-    }
 
 }

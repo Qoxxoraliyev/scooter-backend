@@ -15,9 +15,6 @@ public record RideFinishDTO(
         @NotNull(message = "End longitude is required")
         @DecimalMin(value = "-180.0")
         @DecimalMax(value = "180.0")
-        Double endLon,
-
-        @PositiveOrZero(message = "Distance cannot be negative")
-        Double distance
+        Double endLon
 
 ) {}
