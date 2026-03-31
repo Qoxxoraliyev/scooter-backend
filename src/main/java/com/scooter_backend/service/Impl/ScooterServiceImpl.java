@@ -115,7 +115,7 @@ public class ScooterServiceImpl implements ScooterService {
         scooter.setName(dto.name());
         scooter.setStatus(dto.status());
         scooter.setBatteryLevel(dto.batteryLevel());
-        scooter.setLocked(dto.locked());
+        scooter.setLocked(dto.isLocked());
         scooter.setPricePerKm(dto.pricePerKm());
 
         if (dto.status() == ScooterStatus.INACTIVE) {

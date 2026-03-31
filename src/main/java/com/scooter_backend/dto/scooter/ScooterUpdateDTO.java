@@ -20,7 +20,7 @@ public record ScooterUpdateDTO(
         Integer batteryLevel,
 
         @NotNull(message = "Lock status is required")
-        Boolean locked,
+        Boolean isLocked,
 
         @NotNull(message = "Price per km is required")
         @Positive(message = "Price must be positive")
