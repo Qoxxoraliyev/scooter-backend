@@ -1,4 +1,5 @@
 package com.scooter_backend.controller;
+import com.scooter_backend.dto.user.AdminDriverLocationResponseDTO;
 import com.scooter_backend.dto.ride.RideResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterStatusDTO;
@@ -12,6 +13,7 @@ import com.scooter_backend.repository.UserRepository;
 import com.scooter_backend.service.RideService;
 import com.scooter_backend.service.ScooterService;
 import com.scooter_backend.service.UserService;
+import com.scooter_backend.service.driver.DriverLocationService;
 import com.scooter_backend.service.driver.DriverPresenceService;
 import com.scooter_backend.service.driver.DriverService;
 import com.scooter_backend.service.location.ScooterLocationService;
@@ -35,8 +37,17 @@ public class AdminController {
     private final DriverPresenceService presenceService;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final DriverLocationService driverLocationService;
 
-    public AdminController(ScooterService scooterService, RideService rideService, UserRepository userRepository, ScooterLocationService locationService, DriverService driverService, DriverPresenceService presenceService, PasswordEncoder passwordEncoder, UserService userService) {
+    public AdminController(ScooterService scooterService,
+                           RideService rideService,
+                           UserRepository userRepository,
+                           ScooterLocationService locationService,
+                           DriverService driverService,
+                           DriverPresenceService presenceService,
+                           PasswordEncoder passwordEncoder,
+                           UserService userService,
+                           DriverLocationService driverLocationService) {
         this.scooterService = scooterService;
         this.rideService = rideService;
         this.userRepository = userRepository;
@@ -45,6 +56,7 @@ public class AdminController {
         this.presenceService = presenceService;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.driverLocationService = driverLocationService;
     }
 
     @GetMapping("/dashboard")
@@ -56,6 +68,13 @@ public class AdminController {
         data.put("onlineDrivers", presenceService.getOnlineDrivers().size());
 
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/drivers/{driverId}/location")
+    public ResponseEntity<AdminDriverLocationResponseDTO> getDriverLastLocation(
+            @PathVariable Long driverId
+    ) {
+        return ResponseEntity.ok(driverLocationService.getLastLocationByDriverId(driverId));
     }
 
     @GetMapping("/statistics/weekly-rides")

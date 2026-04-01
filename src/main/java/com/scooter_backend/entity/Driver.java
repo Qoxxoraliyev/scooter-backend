@@ -3,6 +3,9 @@ package com.scooter_backend.entity;
 import com.scooter_backend.enums.DriverStatus;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "drivers")
 public class Driver {
@@ -20,6 +23,9 @@ public class Driver {
     @Enumerated(EnumType.STRING)
     private DriverStatus status;
 
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DriverLocation> locations = new ArrayList<>();
+
     public Driver(){}
 
     public Driver(Long id, User user, Scooter scooter, DriverStatus status) {
@@ -28,7 +34,6 @@ public class Driver {
         this.scooter = scooter;
         this.status = status;
     }
-
 
     public Long getId() {
         return id;
@@ -56,6 +61,14 @@ public class Driver {
 
     public void setStatus(DriverStatus status) {
         this.status = status;
+    }
+
+    public List<DriverLocation> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<DriverLocation> locations) {
+        this.locations = locations;
     }
 
 
