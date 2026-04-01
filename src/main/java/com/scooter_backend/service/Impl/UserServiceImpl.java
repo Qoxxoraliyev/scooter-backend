@@ -6,6 +6,7 @@ import com.scooter_backend.entity.Scooter;
 import com.scooter_backend.entity.User;
 import com.scooter_backend.enums.DriverStatus;
 import com.scooter_backend.enums.Role;
+import com.scooter_backend.enums.ScooterStatus;
 import com.scooter_backend.mapper.UserMapper;
 import com.scooter_backend.repository.DriverRepository;
 import com.scooter_backend.repository.ScooterRepository;
@@ -51,22 +52,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         if (dto.role() == Role.DRIVER) {
-            if (dto.scooterId() == null) {
-                throw new RuntimeException("Driver uchun scooterId majburiy");
-            }
 
-            Scooter scooter = scooterRepository.findById(dto.scooterId())
-                    .orElseThrow(() -> new RuntimeException("Scooter topilmadi"));
-
-            if (scooter.getDriver() != null) {
-                throw new RuntimeException("Bu scooter allaqachon boshqa driverga biriktirilgan");
-            }
+            Scooter scooter = scooterRepository
+                    .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
+                    .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
 
             Driver driver = new Driver();
             driver.setUser(user);
             driver.setScooter(scooter);
             driver.setStatus(dto.status() != null ? dto.status() : DriverStatus.INACTIVE);
-
 
             user.setDriver(driver);
             scooter.setDriver(driver);
