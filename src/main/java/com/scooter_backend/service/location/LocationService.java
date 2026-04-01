@@ -43,7 +43,7 @@ public class LocationService {
 
         long now = System.currentTimeMillis();
         String key = LOCATION_KEY + scooterId;
-        String tsKey = key + ":ts";
+        String tsKey = key + ":time";
 
         Object tsValue = redisTemplate.opsForValue().get(tsKey);
         Long lastUpdate = tsValue instanceof Long ? (Long) tsValue : null;
@@ -55,7 +55,7 @@ public class LocationService {
         Map<String, Object> location = Map.of(
                 "lat", lat,
                 "lon", lon,
-                "ts", now
+                "time", now
         );
 
         redisTemplate.opsForValue().set(key, location, Duration.ofMinutes(5));

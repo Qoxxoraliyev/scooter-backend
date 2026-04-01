@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +31,10 @@ public class DriverLocationService {
 
     private static final String DRIVER_LOCATION_KEY = "driver:location:";
     private static final long THROTTLE_MS = 1500;
+
+    private static final DateTimeFormatter TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("HH:mm:ss")
+                    .withZone(ZoneId.systemDefault());
 
     public DriverLocationService(DriverRepository driverRepository,
                                  RedisTemplate<String, Object> redisTemplate,
@@ -49,7 +55,7 @@ public class DriverLocationService {
 
         long now = System.currentTimeMillis();
         String key = DRIVER_LOCATION_KEY + driver.getId();
-        String tsKey = key + ":ts";
+        String tsKey = key + ":time";
 
         Object tsValue = redisTemplate.opsForValue().get(tsKey);
         Long lastUpdate = extractLong(tsValue);
@@ -61,7 +67,7 @@ public class DriverLocationService {
         Map<String, Object> location = new HashMap<>();
         location.put("lat", dto.lat());
         location.put("lon", dto.lon());
-        location.put("ts", now);
+        location.put("time", now);
 
         redisTemplate.opsForValue().set(key, location, Duration.ofMinutes(5));
         redisTemplate.opsForValue().set(tsKey, now, Duration.ofMinutes(5));
@@ -92,25 +98,27 @@ public class DriverLocationService {
         if (value instanceof Map<?, ?> map) {
             Double lat = map.get("lat") != null ? Double.valueOf(map.get("lat").toString()) : null;
             Double lon = map.get("lon") != null ? Double.valueOf(map.get("lon").toString()) : null;
-            Long ts = map.get("ts") != null ? Long.valueOf(map.get("ts").toString()) : null;
+            Long timeMillis = map.get("time") != null ? Long.valueOf(map.get("time").toString()) : null;
 
-            return new AdminDriverLocationResponseDTO(driverId, lat, lon, ts);
+            String formattedTime = timeMillis != null
+                    ? TIME_FORMATTER.format(Instant.ofEpochMilli(timeMillis))
+                    : null;
+
+            return new AdminDriverLocationResponseDTO(driverId, lat, lon, formattedTime);
         }
 
         DriverLocation lastLocation = driverLocationRepository
                 .findTopByDriverIdOrderByCreatedAtDesc(driverId)
                 .orElseThrow(() -> new RuntimeException("Driver location not found"));
 
-        Long ts = lastLocation.getCreatedAt()
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
+        String formattedTime = lastLocation.getCreatedAt()
+                .format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
         return new AdminDriverLocationResponseDTO(
                 driverId,
                 lastLocation.getLatitude(),
                 lastLocation.getLongitude(),
-                ts
+                formattedTime
         );
     }
 

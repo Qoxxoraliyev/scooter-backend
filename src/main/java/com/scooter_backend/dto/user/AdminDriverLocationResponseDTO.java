@@ -4,5 +4,5 @@ public record AdminDriverLocationResponseDTO(
         Long driverId,
         Double lat,
         Double lon,
-        Long ts
+        String time
 ){}

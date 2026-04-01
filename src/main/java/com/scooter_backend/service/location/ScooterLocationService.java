@@ -30,8 +30,8 @@ public class ScooterLocationService {
 
         for (String key : keys) {
 
-            // ts keylarni tashlab yuboramiz
-            if (key.endsWith(":ts")) {
+            // time keylarni tashlab yuboramiz
+            if (key.endsWith(":time")) {
                 continue;
             }
 
@@ -48,7 +48,7 @@ public class ScooterLocationService {
                 Map<String, Object> location = new HashMap<>();
                 location.put("lat", locationMap.get("lat"));
                 location.put("lon", locationMap.get("lon"));
-                location.put("ts", locationMap.get("ts"));
+                location.put("time", locationMap.get("time"));
 
                 result.put(scooterId, location);
 
