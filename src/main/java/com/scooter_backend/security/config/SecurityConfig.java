@@ -70,7 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/location/**").permitAll()//.authenticated()
 
                         .requestMatchers("/api/driver/online").permitAll()
-                        .requestMatchers("/api/driver/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/driver/**").hasAnyAuthority("ADMIN","DRIVER")
 
 
 
