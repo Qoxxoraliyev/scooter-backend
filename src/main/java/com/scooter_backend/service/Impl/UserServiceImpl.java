@@ -108,38 +108,46 @@ public class UserServiceImpl implements UserService {
 
         if (dto.role() == Role.DRIVER) {
             Driver driver = user.getDriver();
+
             if (driver == null) {
                 driver = new Driver();
                 driver.setUser(user);
-                driver.setStatus(dto.status() != null ? dto.status() : DriverStatus.INACTIVE);
                 user.setDriver(driver);
             }
-            if (dto.scooterId() == null) {
-                throw new RuntimeException("Driver uchun scooterId majburiy");
-            }
-            Scooter scooter = scooterRepository.findById(dto.scooterId())
-                    .orElseThrow(() -> new RuntimeException("Scooter topilmadi"));
-            if (scooter.getDriver() != null && !scooter.getDriver().getId().equals(user.getId())) {
-                throw new RuntimeException("Bu scooter allaqachon boshqa driverga biriktirilgan");
-            }
-            driver.setScooter(scooter);
-            scooter.setDriver(driver);
+
             if (dto.status() != null) {
                 driver.setStatus(dto.status());
+            } else if (driver.getStatus() == null) {
+                driver.setStatus(DriverStatus.INACTIVE);
             }
+
+            if (driver.getScooter() == null) {
+                Scooter scooter = scooterRepository
+                        .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
+                        .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
+
+                driver.setScooter(scooter);
+                scooter.setDriver(driver);
+            }
+
             driverRepository.save(driver);
+
         } else {
             Driver driver = user.getDriver();
 
             if (driver != null) {
                 Scooter scooter = driver.getScooter();
+
                 if (scooter != null) {
                     scooter.setDriver(null);
+                    driver.setScooter(null);
                 }
+
                 user.setDriver(null);
                 driverRepository.delete(driver);
             }
         }
+
         User savedUser = userRepository.save(user);
         return UserMapper.toDTO(savedUser);
     }

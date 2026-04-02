@@ -18,8 +18,6 @@ public record UserUpdateDTO(
 
         Boolean enabled,
 
-        DriverStatus status,
-
-        Long scooterId
+        DriverStatus status
 
 ) {}
