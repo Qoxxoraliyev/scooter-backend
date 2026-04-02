@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if (dto.role() == Role.DRIVER) {
 
             Scooter scooter = scooterRepository
-                    .findFirstByDriverIsNullAndStatusAndIsLockedTrueAndDeletedFalse(ScooterStatus.ACTIVE)
+                    .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
                     .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
 
             Driver driver = new Driver();
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
 
             if (driver.getScooter() == null) {
                 Scooter scooter = scooterRepository
-                        .findFirstByDriverIsNullAndStatusAndIsLockedTrueAndDeletedFalse(ScooterStatus.ACTIVE)
+                        .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
                         .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
 
                 driver.setScooter(scooter);
