@@ -1,29 +1,25 @@
 package com.scooter_backend.service.driver;
-import com.scooter_backend.entity.User;
+import com.scooter_backend.entity.Driver;
 import com.scooter_backend.enums.DriverStatus;
-import com.scooter_backend.repository.UserRepository;
+import com.scooter_backend.repository.DriverRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class DriverService {
 
-    private final UserRepository userRepository;
+    private final DriverRepository driverRepository;
 
-    public DriverService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public DriverService(DriverRepository driverRepository) {
+        this.driverRepository = driverRepository;
     }
 
     public void updateDriverStatus(Long driverId, DriverStatus status) {
-
-        User driver = userRepository.findById(driverId)
+        Driver driver = driverRepository.findById(driverId)
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
 
-        if (!"DRIVER".equals(driver.getRole().name())) {
-            throw new RuntimeException("User is not a driver");
-        }
-
         driver.setStatus(status);
+        driverRepository.save(driver);
     }
-
-
 }
