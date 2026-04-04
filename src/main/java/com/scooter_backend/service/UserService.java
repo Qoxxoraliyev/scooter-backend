@@ -19,4 +19,6 @@ public interface UserService {
 
     void delete(Long id);
 
+    void assignScooterToDriver(Long userId, Long scooterId);
+
 }

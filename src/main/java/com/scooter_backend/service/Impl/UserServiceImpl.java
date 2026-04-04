@@ -180,6 +180,54 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public void assignScooterToDriver(Long userId, Long scooterId) {
+        User user = getUser(userId);
+
+        if (user.getRole() != Role.DRIVER) {
+            throw new RuntimeException("User is not a driver");
+        }
+
+        Driver driver = user.getDriver();
+
+        if (driver == null) {
+            driver = new Driver();
+            driver.setUser(user);
+            driver.setStatus(DriverStatus.INACTIVE);
+            user.setDriver(driver);
+        }
+
+        Scooter newScooter = scooterRepository.findById(scooterId)
+                .orElseThrow(() -> new RuntimeException("Scooter not found"));
+
+        if (Boolean.TRUE.equals(newScooter.getDeleted())) {
+            throw new RuntimeException("Scooter is deleted");
+        }
+
+        if (newScooter.getStatus() != ScooterStatus.ACTIVE) {
+            throw new RuntimeException("Scooter is not active");
+        }
+
+        if (newScooter.getDriver() != null &&
+                !newScooter.getDriver().getUser().getId().equals(userId)) {
+            throw new RuntimeException("Scooter already assigned to another driver");
+        }
+
+        Scooter oldScooter = driver.getScooter();
+
+        if (oldScooter != null && !oldScooter.getId().equals(newScooter.getId())) {
+            oldScooter.setDriver(null);
+            driver.setScooter(null);
+        }
+
+        driver.setScooter(newScooter);
+        newScooter.setDriver(driver);
+
+        userRepository.save(user);
+        driverRepository.save(driver);
+        scooterRepository.save(newScooter);
+    }
+
 
 
 }

@@ -1,4 +1,5 @@
 package com.scooter_backend.controller;
+import com.scooter_backend.dto.scooter.AssignScooterDTO;
 import com.scooter_backend.dto.user.AdminDriverLocationResponseDTO;
 import com.scooter_backend.dto.ride.RideResponseDTO;
 import com.scooter_backend.dto.scooter.ScooterResponseDTO;
@@ -218,4 +219,12 @@ public class AdminController {
         return ResponseEntity.ok(rideService.countTodayRidesByScooter(id));
     }
 
+    @PutMapping("/users/{id}/assign-scooter")
+    public ResponseEntity<Void> assignScooterToDriver(
+            @PathVariable Long id,
+            @Valid @RequestBody AssignScooterDTO dto
+    ) {
+        userService.assignScooterToDriver(id, dto.scooterId());
+        return ResponseEntity.noContent().build();
+    }
 }
