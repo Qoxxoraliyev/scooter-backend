@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User is not a driver");
         }
 
-        Driver driver = user.getDriver();
+        Driver driver = driverRepository.findById(userId).orElse(null);
 
         if (driver == null) {
             driver = new Driver();
@@ -223,9 +223,7 @@ public class UserServiceImpl implements UserService {
         driver.setScooter(newScooter);
         newScooter.setDriver(driver);
 
-        userRepository.save(user);
         driverRepository.save(driver);
-        scooterRepository.save(newScooter);
     }
 
 
