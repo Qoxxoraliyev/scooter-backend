@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(dto.role());
         user.setEnabled(dto.enabled() != null ? dto.enabled() : true);
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.saveAndFlush(user);
 
         if (dto.role() == Role.DRIVER) {
             Scooter scooter;
@@ -87,10 +87,7 @@ public class UserServiceImpl implements UserService {
             savedUser.setDriver(driver);
             scooter.setDriver(driver);
 
-            driverRepository.save(driver);
-
-            savedUser = userRepository.findById(savedUser.getId())
-                    .orElseThrow(() -> new RuntimeException("User not found after save"));
+            driverRepository.saveAndFlush(driver);
         }
 
         return UserMapper.toDTO(savedUser);
