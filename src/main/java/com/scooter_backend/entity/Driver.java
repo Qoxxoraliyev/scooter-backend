@@ -15,9 +15,11 @@ public class Driver {
 
     @OneToOne
     @MapsId
+    @JoinColumn(name = "id")
     private User user;
 
     @OneToOne
+    @JoinColumn(name = "scooter_id", unique = true)
     private Scooter scooter;
 
     @Enumerated(EnumType.STRING)
