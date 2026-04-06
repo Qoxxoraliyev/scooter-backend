@@ -1,6 +1,5 @@
 package com.scooter_backend.entity;
 
-import com.scooter_backend.enums.DriverStatus;
 import com.scooter_backend.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -51,8 +50,6 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Driver driver;
 
-    @Enumerated(EnumType.STRING)
-    private DriverStatus status;
 
     //  auto set
     @PrePersist
@@ -66,7 +63,7 @@ public class User {
     public User(){}
 
 
-    public User(Long id, String fullName, String phone, String password, Role role, Boolean enabled, LocalDateTime createdAt, List<Ride> rides, Driver driver, DriverStatus status) {
+    public User(Long id, String fullName, String phone, String password, Role role, Boolean enabled, LocalDateTime createdAt, List<Ride> rides, Driver driver) {
         this.id = id;
         this.fullName = fullName;
         this.phone = phone;
@@ -76,7 +73,6 @@ public class User {
         this.createdAt = createdAt;
         this.rides = rides;
         this.driver = driver;
-        this.status = status;
     }
 
     public Long getId() {
@@ -133,14 +129,6 @@ public class User {
 
     public void setRides(List<Ride> rides) {
         this.rides = rides;
-    }
-
-    public void setStatus(DriverStatus status) {
-        this.status = status;
-    }
-
-    public DriverStatus getStatus() {
-        return status;
     }
 
     public Driver getDriver() {

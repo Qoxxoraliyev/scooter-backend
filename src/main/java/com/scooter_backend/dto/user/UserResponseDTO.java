@@ -11,8 +11,8 @@ public record UserResponseDTO(
         String phone,
         Role role,
         Boolean enabled,
+        LocalDateTime createdAt,
         DriverStatus status,
-        Long scooterId,
-        LocalDateTime createdAt
+        Long scooterId
 ) {}
 

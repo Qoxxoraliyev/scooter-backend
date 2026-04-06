@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDTO create(UserCreateDTO dto) {
         if (userRepository.existsByPhone(dto.phone())) {
             throw new RuntimeException("Phone already exists");
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(dto.role());
         user.setEnabled(dto.enabled() != null ? dto.enabled() : true);
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         if (dto.role() == Role.DRIVER) {
             Scooter scooter;
@@ -80,17 +81,17 @@ public class UserServiceImpl implements UserService {
             }
 
             Driver driver = new Driver();
-            driver.setUser(user);
+            driver.setUser(savedUser);
             driver.setScooter(scooter);
             driver.setStatus(dto.status() != null ? dto.status() : DriverStatus.INACTIVE);
 
-            user.setDriver(driver);
+            savedUser.setDriver(driver);
             scooter.setDriver(driver);
 
             driverRepository.save(driver);
         }
 
-        return UserMapper.toDTO(user);
+        return UserMapper.toDTO(savedUser);
     }
 
 
