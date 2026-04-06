@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 }
             } else {
                 scooter = scooterRepository
-                        .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
+                        .findFirstByDriverIsNullAndStatusAndIsLockedTrueAndDeletedFalse(ScooterStatus.ACTIVE)
                         .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
             }
 
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
 
             if (driver.getScooter() == null) {
                 Scooter scooter = scooterRepository
-                        .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
+                        .findFirstByDriverIsNullAndStatusAndIsLockedTrueAndDeletedFalse(ScooterStatus.ACTIVE)
                         .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
 
                 driver.setScooter(scooter);

@@ -14,7 +14,5 @@ public interface ScooterRepository extends JpaRepository<Scooter,Long> {
 
     long countByStatusAndDeletedFalse(ScooterStatus status);
 
-    Optional<Scooter> findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus status);
-
-
+    Optional<Scooter> findFirstByDriverIsNullAndStatusAndIsLockedTrueAndDeletedFalse(ScooterStatus status);
 }
