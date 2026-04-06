@@ -47,7 +47,7 @@ public class User {
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Ride> rides;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Driver driver;
 
 

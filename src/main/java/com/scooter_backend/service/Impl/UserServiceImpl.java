@@ -73,7 +73,6 @@ public class UserServiceImpl implements UserService {
                 if (scooter.getDriver() != null) {
                     throw new RuntimeException("Scooter already assigned to another driver");
                 }
-
             } else {
                 scooter = scooterRepository
                         .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
@@ -89,6 +88,9 @@ public class UserServiceImpl implements UserService {
             scooter.setDriver(driver);
 
             driverRepository.save(driver);
+
+            savedUser = userRepository.findById(savedUser.getId())
+                    .orElseThrow(() -> new RuntimeException("User not found after save"));
         }
 
         return UserMapper.toDTO(savedUser);
