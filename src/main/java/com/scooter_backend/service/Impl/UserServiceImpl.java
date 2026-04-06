@@ -41,6 +41,10 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Phone already exists");
         }
 
+        if (dto.role() != Role.DRIVER && dto.scooterId() != null) {
+            throw new RuntimeException("Scooter can only be assigned when role is DRIVER");
+        }
+
         User user = new User();
         user.setFullName(dto.fullName());
         user.setPhone(dto.phone());
@@ -51,10 +55,29 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         if (dto.role() == Role.DRIVER) {
+            Scooter scooter;
 
-            Scooter scooter = scooterRepository
-                    .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
-                    .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
+            if (dto.scooterId() != null) {
+                scooter = scooterRepository.findById(dto.scooterId())
+                        .orElseThrow(() -> new RuntimeException("Scooter not found"));
+
+                if (Boolean.TRUE.equals(scooter.getDeleted())) {
+                    throw new RuntimeException("Scooter is deleted");
+                }
+
+                if (scooter.getStatus() != ScooterStatus.ACTIVE) {
+                    throw new RuntimeException("Scooter is not active");
+                }
+
+                if (scooter.getDriver() != null) {
+                    throw new RuntimeException("Scooter already assigned to another driver");
+                }
+
+            } else {
+                scooter = scooterRepository
+                        .findFirstByDriverIsNullAndStatusAndIsLockedFalseAndDeletedFalse(ScooterStatus.ACTIVE)
+                        .orElseThrow(() -> new RuntimeException("Mos bo'sh scooter topilmadi"));
+            }
 
             Driver driver = new Driver();
             driver.setUser(user);

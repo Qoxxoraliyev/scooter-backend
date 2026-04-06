@@ -22,5 +22,7 @@ public record UserCreateDTO(
 
         Boolean enabled,
 
-        DriverStatus status
+        DriverStatus status,
+
+        Long scooterId
 ) {}
