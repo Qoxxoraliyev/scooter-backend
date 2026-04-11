@@ -53,7 +53,12 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 🔒 ADMIN endpoints
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")             //.hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")//.hasAuthority("ADMIN")
+
+                        .requestMatchers("/api/operator/**").hasAnyAuthority("ADMIN", "OPERATOR")
+
+                        .requestMatchers("/api/driver/orders/**").hasAnyAuthority("ADMIN", "DRIVER")
+
                         // 🔒 USER endpoints
                         .requestMatchers("/api/rides/**").hasAnyAuthority("ADMIN","DRIVER")//.hasAnyAuthority("USER", "ADMIN")
 
