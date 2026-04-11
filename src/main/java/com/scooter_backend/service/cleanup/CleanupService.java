@@ -37,6 +37,4 @@ public class CleanupService {
 
         System.out.println("Old data cleaned: " + threshold);
     }
-
-    
 }
