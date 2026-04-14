@@ -5,9 +5,10 @@ import com.scooter_backend.enums.OrderStatus;
 import java.time.LocalDateTime;
 
 public record OrderResponseDTO(
-
         Long id,
-        String message,
+        String from,
+        String to,
+        String clientPhone,
         OrderStatus status,
         Long createdByOperatorId,
         Long acceptedByDriverId,

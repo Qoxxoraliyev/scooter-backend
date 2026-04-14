@@ -15,8 +15,16 @@ public class OrderRequest {
     private Long id;
 
     @NotBlank
-    @Column(nullable = false,length = 500)
-    private String message;
+    @Column(nullable = false,name = "from_location")
+    private String fromLocation;
+
+    @NotBlank
+    @Column(nullable = false,name = "to_location")
+    private String toLocation;
+
+    @NotBlank
+    @Column(nullable = false,name = "client_phone")
+    private String clientPhone;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,9 +55,11 @@ public class OrderRequest {
 
     public OrderRequest(){}
 
-    public OrderRequest(Long id, String message, OrderStatus status, User createdByOperator, User acceptedByDriver, LocalDateTime createdAt, LocalDateTime acceptedAt, LocalDateTime completedAt) {
+    public OrderRequest(Long id, String fromLocation, String toLocation, String clientPhone, OrderStatus status, User createdByOperator, User acceptedByDriver, LocalDateTime createdAt, LocalDateTime acceptedAt, LocalDateTime completedAt) {
         this.id = id;
-        this.message = message;
+        this.fromLocation = fromLocation;
+        this.toLocation = toLocation;
+        this.clientPhone = clientPhone;
         this.status = status;
         this.createdByOperator = createdByOperator;
         this.acceptedByDriver = acceptedByDriver;
@@ -58,18 +68,36 @@ public class OrderRequest {
         this.completedAt = completedAt;
     }
 
-
-
     public Long getId() {
         return id;
     }
 
-    public String getMessage() {
-        return message;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getFromLocation() {
+        return fromLocation;
+    }
+
+    public void setFromLocation(String fromLocation) {
+        this.fromLocation = fromLocation;
+    }
+
+    public String getToLocation() {
+        return toLocation;
+    }
+
+    public void setToLocation(String toLocation) {
+        this.toLocation = toLocation;
+    }
+
+    public String getClientPhone() {
+        return clientPhone;
+    }
+
+    public void setClientPhone(String clientPhone) {
+        this.clientPhone = clientPhone;
     }
 
     public OrderStatus getStatus() {
@@ -115,5 +143,6 @@ public class OrderRequest {
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
+
 
 }

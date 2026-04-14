@@ -23,7 +23,7 @@ public class OperatorOrderController {
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderCreateDTO dto,
                                                         Authentication authentication) {
-        return ResponseEntity.ok(orderRequestService.createOrder(authentication.getName(), dto.message()));
+        return ResponseEntity.ok(orderRequestService.createOrder(authentication.getName(), dto));
     }
 
     @GetMapping("/my")

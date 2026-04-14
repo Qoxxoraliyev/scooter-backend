@@ -1,11 +1,19 @@
 package com.scooter_backend.dto.order;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public record OrderCreateDTO(
 
-        @NotBlank(message = "Message is required")
-        @Size(max = 500,message = "Message must be at most 500 characters")
-        String message
+        @NotBlank
+        @Column(nullable = false,name = "from_location")
+        String fromLocation,
+
+        @NotBlank
+        @Column(nullable = false,name = "to_location")
+        String toLocation,
+
+        @NotBlank
+        @Column(nullable = false,name = "client_phone")
+        String clientPhone
 ) {}

@@ -1,6 +1,7 @@
 package com.scooter_backend.service.order;
 
 import com.scooter_backend.dto.order.OrderAcceptedEventDTO;
+import com.scooter_backend.dto.order.OrderCreateDTO;
 import com.scooter_backend.dto.order.OrderResponseDTO;
 import com.scooter_backend.entity.OrderRequest;
 import com.scooter_backend.entity.User;
@@ -33,19 +34,23 @@ public class OrderRequestServiceImpl implements OrderRequestService {
     }
 
     @Override
-    public OrderResponseDTO createOrder(String operatorPhone, String message) {
+    public OrderResponseDTO createOrder(String operatorPhone, OrderCreateDTO dto) {
         User operator = getUserByPhone(operatorPhone);
         ensureRole(operator, Role.OPERATOR, "Only operator can create order");
 
         OrderRequest order = new OrderRequest();
-        order.setMessage(message);
+        order.setFromLocation(dto.fromLocation());
+        order.setToLocation(dto.toLocation());
+        order.setClientPhone(dto.clientPhone());
         order.setCreatedByOperator(operator);
         order.setStatus(OrderStatus.NEW);
 
         OrderRequest saved = orderRequestRepository.save(order);
-        OrderResponseDTO dto = toDTO(saved);
-        orderSocketService.sendNewOrder(dto);
-        return dto;
+        OrderResponseDTO responseDTO = toDTO(saved);
+
+        orderSocketService.sendNewOrder(responseDTO);
+
+        return responseDTO;
     }
 
     @Override
@@ -164,13 +169,15 @@ public class OrderRequestServiceImpl implements OrderRequestService {
         }
     }
 
-    private OrderResponseDTO toDTO(OrderRequest order){
+    private OrderResponseDTO toDTO(OrderRequest order) {
         return new OrderResponseDTO(
                 order.getId(),
-                order.getMessage(),
+                order.getFromLocation(),
+                order.getToLocation(),
+                order.getClientPhone(),
                 order.getStatus(),
-                order.getCreatedByOperator()!=null ? order.getCreatedByOperator().getId():null,
-                order.getAcceptedByDriver()!=null?order.getAcceptedByDriver().getId():null,
+                order.getCreatedByOperator() != null ? order.getCreatedByOperator().getId() : null,
+                order.getAcceptedByDriver() != null ? order.getAcceptedByDriver().getId() : null,
                 order.getCreatedAt(),
                 order.getAcceptedAt(),
                 order.getCompletedAt()
