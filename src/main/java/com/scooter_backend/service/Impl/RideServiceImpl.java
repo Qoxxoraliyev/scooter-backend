@@ -116,7 +116,7 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(RideStatus.FINISHED);
         ride.setPaid(false);
 
-        scooter.setLocked(true);
+        scooter.setLocked(false);
 
 
         scooterRepository.save(scooter);
@@ -200,7 +200,7 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(RideStatus.CANCELLED);
 
         Scooter scooter = ride.getScooter();
-        scooter.setLocked(true);
+        scooter.setLocked(false);
 
         scooterRepository.save(scooter);
         rideRepository.save(ride);
