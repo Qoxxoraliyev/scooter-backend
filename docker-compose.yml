@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build: .
@@ -11,16 +13,28 @@ services:
       redis:
         condition: service_started
     environment:
+      # Ma'lumotlar bazasi ulanishi
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/scooter_backend
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 1984
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
 
+      # Redis ulanishi
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
 
+      # Xavfsizlik kalitlari (JWT)
       JWT_SECRET: veryveryveryveryveryverysecuresecretkey123456
       JWT_EXPIRATION: 86400000
+
+     
+
+      # 🔒 SERVER UCHUN PRODUCTION SOZLAMALARI (Properties faylni o'zgartirmasdan shu yerda sozlaymiz)
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: "false"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "false"
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: INFO
+
     networks:
       - scooter-network
 
